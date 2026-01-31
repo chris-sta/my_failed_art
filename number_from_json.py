@@ -1,8 +1,8 @@
 import json
 import os
+import re
 
 JSON_FILE = "index.json"
-PAGES_DIR = "creations"
 MARKER = "<!-- PAGE_COUNTER -->"
 CSS_LINK = '<link rel="stylesheet" href="../styles/counter.css">'
 
@@ -27,9 +27,14 @@ for f in files:
 total = len(paths)
 print(f"Found {total} pages")
 
+counter_re = re.compile(r'<div class="page-counter">.*?</div>', re.DOTALL)
+
 for index, path in enumerate(paths, start=1):
     with open(path, "r", encoding="utf-8") as f:
         content = f.read()
+
+    # Remove old counters
+    content = counter_re.sub("", content)
 
     if CSS_LINK not in content:
         if "</head>" in content:
@@ -50,6 +55,3 @@ for index, path in enumerate(paths, start=1):
         f.write(content)
 
 print("Numbering complete ✅")
-
-# cd C:\Users\Chris\Documents\Repos\my_failed_art
-# py number_from_json.py
