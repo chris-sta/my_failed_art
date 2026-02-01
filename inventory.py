@@ -25,7 +25,7 @@ for f in files:
 buttons_html = '<div class="inventory-buttons">\n'
 for index, path in enumerate(paths, start=1):
     label = f"{index:02}"
-    buttons_html += f'  <button onclick="location.href=\'{path}\'">{label}</button>\n'
+    buttons_html += f'  <button onclick="goTo(\'{path}\')">{label}</button>\n'
 buttons_html += '</div>'
 
 with open(INVENTORY_FILE, "r", encoding="utf-8") as f:
