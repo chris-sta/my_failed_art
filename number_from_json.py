@@ -18,22 +18,24 @@ for item in data:
 
 paths = []
 for f in files:
-    full_path = f
-    if os.path.exists(full_path):
-        paths.append(full_path)
+    if os.path.exists(f):
+        paths.append(f)
     else:
-        print(f"Warning: {full_path} not found, skipping")
+        print(f"Warning: {f} not found, skipping")
 
 total = len(paths)
 print(f"Found {total} pages")
 
-counter_re = re.compile(r'<div class="page-counter">.*?</div>', re.DOTALL)
+nav_re = re.compile(
+    r'\n*\s*<div class="page-counter">.*?</div>\s*<div class="page-buttons">.*?</div>\s*\n*',
+    re.DOTALL
+)
 
 for index, path in enumerate(paths, start=1):
     with open(path, "r", encoding="utf-8") as f:
         content = f.read()
 
-    content = counter_re.sub("", content)
+    content = nav_re.sub("\n", content)
 
     if CSS_LINK not in content:
         if "</head>" in content:
@@ -41,14 +43,21 @@ for index, path in enumerate(paths, start=1):
         else:
             content = CSS_LINK + "\n" + content
 
-    counter_html = f'<div class="page-counter">{index}/{total}</div>'
+    navigation_html = f"""
+<div class="page-counter">{index}/{total}</div>
+<div class="page-buttons">
+    <button onclick="location.href='/'">Home</button>
+    <button onclick="location.href='/inventory.html'">Inventory</button>
+</div>
+"""
+
     if MARKER in content:
-        content = content.replace(MARKER, counter_html)
+        content = content.replace(MARKER, navigation_html.strip())
     else:
         if "</body>" in content:
-            content = content.replace("</body>", counter_html + "\n</body>")
+            content = content.replace("</body>", navigation_html + "\n</body>")
         else:
-            content += counter_html
+            content += navigation_html
 
     with open(path, "w", encoding="utf-8") as f:
         f.write(content)
