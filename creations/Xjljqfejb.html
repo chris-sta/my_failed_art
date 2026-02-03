@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Shifted Featured Article</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+      line-height: 1.6;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    .meta {
+      color: #666;
+      margin-bottom: 20px;
+    }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+  <h1>Wikipedia Featured Article (Shifted)</h1>
+  <div class="meta" id="meta">Loading…</div>
+  <pre id="content"></pre>
+
+  <script>
+    function shiftText(text) {
+      return text.replace(/[a-zA-Z]/g, char => {
+        const base = char >= 'a' ? 'a'.charCodeAt(0) : 'A'.charCodeAt(0);
+        return String.fromCharCode(
+          base + (char.charCodeAt(0) - base + 1) % 26
+        );
+      });
+    }
+
+    async function loadFeaturedArticle() {
+      const url = 'https://en.wikipedia.org/api/rest_v1/page/featured/';
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        const title = data.tfa.title;
+        const extract = data.tfa.extract;
+
+        document.getElementById('meta').textContent =
+          `Original title: ${title}`;
+
+        document.getElementById('content').textContent =
+          shiftText(extract);
+
+      } catch (err) {
+        document.getElementById('meta').textContent =
+          'Failed to load article.';
+      }
+    }
+
+    loadFeaturedArticle();
+  </script>
+</body>
+</html>
