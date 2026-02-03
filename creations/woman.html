@@ -33,33 +33,40 @@ const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$
 
 let matrix = [];
 let colorMatrix = [];
-
 let faceData = [];
 let facePixels = [];
 
+const images = [
+    '../resources/woman1.jpg',
+    '../resources/woman2.jpg',
+    '../resources/woman3.jpg',
+    '../resources/woman4.jpg',
+    '../resources/woman5.jpg'
+];
+
 const img = new Image();
-img.src = '../resources/image01.jpg';
+img.src = images[Math.floor(Math.random() * images.length)];
 img.crossOrigin = "anonymous";
 
 img.onload = function() {
     const hiddenCanvas = document.createElement('canvas');
-hiddenCanvas.width = cols;
-hiddenCanvas.height = rows;
-const hiddenCtx = hiddenCanvas.getContext('2d');
+    hiddenCanvas.width = cols;
+    hiddenCanvas.height = rows;
+    const hiddenCtx = hiddenCanvas.getContext('2d');
 
-const imgRatio = img.width / img.height;
-let targetWidth = cols;
-let targetHeight = Math.floor(targetWidth / imgRatio);
+    const imgRatio = img.width / img.height;
+    let targetWidth = cols;
+    let targetHeight = Math.floor(targetWidth / imgRatio);
 
-if (targetHeight > rows) {
-    targetHeight = rows;
-    targetWidth = Math.floor(targetHeight * imgRatio);
-}
+    if (targetHeight > rows) {
+        targetHeight = rows;
+        targetWidth = Math.floor(targetHeight * imgRatio);
+    }
 
-const offsetX = Math.floor((cols - targetWidth) / 2);
-const offsetY = Math.floor((rows - targetHeight) / 2);
+    const offsetX = Math.floor((cols - targetWidth) / 2);
+    const offsetY = Math.floor((rows - targetHeight) / 2);
 
-hiddenCtx.drawImage(img, offsetX, offsetY, targetWidth, targetHeight);
+    hiddenCtx.drawImage(img, offsetX, offsetY, targetWidth, targetHeight);
 
     const pixels = hiddenCtx.getImageData(0,0,cols,rows).data;
 
@@ -111,7 +118,7 @@ window.addEventListener('resize', () => {
 });
 </script>
 
-<div class="page-counter">23/24</div>
+<div class="page-counter">25/26</div>
 <div class="page-buttons">
     <button onclick="location.href='https://chris-sta.github.io/my_failed_life/index.html'">
         Home

@@ -21,3 +21,4 @@ for i in range(wait_seconds, 0, -1):
 print("\n")
 
 subprocess.run(["python", "inventory.py"])
+subprocess.run(["python", "hinventory.py"])
