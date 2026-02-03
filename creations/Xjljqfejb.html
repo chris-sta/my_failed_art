@@ -31,39 +31,49 @@
   <pre id="content"></pre>
 
   <script>
-    function shiftText(text) {
-      return text.replace(/[a-zA-Z]/g, char => {
-        const base = char >= 'a' ? 'a'.charCodeAt(0) : 'A'.charCodeAt(0);
-        return String.fromCharCode(
-          base + (char.charCodeAt(0) - base + 1) % 26
-        );
-      });
+  function shiftText(text) {
+    return text.replace(/[a-zA-Z]/g, char => {
+      const base = char >= 'a' ? 97 : 65;
+      return String.fromCharCode(
+        base + (char.charCodeAt(0) - base + 1) % 26
+      );
+    });
+  }
+
+  async function loadFeaturedArticle() {
+    try {
+      const res = await fetch(
+        'https://en.wikipedia.org/w/api.php' +
+        '?action=parse' +
+        '&page=Wikipedia:Today\'s_featured_article' +
+        '&prop=text' +
+        '&format=json' +
+        '&origin=*'
+      );
+
+      if (!res.ok) throw new Error('HTTP error');
+
+      const data = await res.json();
+      const html = data.parse.text['*'];
+
+      // Strip HTML tags
+      const text = html.replace(/<[^>]+>/g, '').trim();
+
+      document.getElementById('meta').textContent =
+        'Source: Wikipedia – Today’s Featured Article';
+
+      document.getElementById('content').textContent =
+        shiftText(text);
+
+    } catch (e) {
+      document.getElementById('meta').textContent =
+        'Failed to load article.';
     }
+  }
 
-    async function loadFeaturedArticle() {
-      const url = 'https://en.wikipedia.org/api/rest_v1/page/featured/';
+  loadFeaturedArticle();
+</script>
 
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-
-        const title = data.tfa.title;
-        const extract = data.tfa.extract;
-
-        document.getElementById('meta').textContent =
-          `Original title: ${title}`;
-
-        document.getElementById('content').textContent =
-          shiftText(extract);
-
-      } catch (err) {
-        document.getElementById('meta').textContent =
-          'Failed to load article.';
-      }
-    }
-
-    loadFeaturedArticle();
-  </script>
 
 <div class="page-counter">24/24</div>
 <div class="page-buttons">
