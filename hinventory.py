@@ -9,7 +9,7 @@ for file_path in files:
     line = f'<a href="{file_path}" target="_blank">{name}</a><br>'
     link_lines.append(line)
 
-with open("hiventory.html", "w") as f:
+with open("hinventory.html", "w") as f:
     f.write("\n".join(link_lines))
 
-print("hiventory.html updated!")
+print("hinventory.html updated!")
